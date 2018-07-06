@@ -52,6 +52,7 @@ class _TodayState extends State<TodayWidget> {
             recommendedModel.comicId = object2["comicId"];
             recommendedModel.cover = object2["cover"];
             recommendedModel.chapterCount = object2["chapterCount"];
+            recommendedModel.tags = object2["tags"].join(", ").toString();
             card.recommends.add(recommendedModel);
           }
         }
@@ -178,7 +179,7 @@ Widget _createCardWidget(BuildContext context, TodayModel today) {
           ),
         ),
         title: Text(recommed.name, style: TextStyle(fontSize: 17.0)),
-        subtitle: Text(recommed.name, style: TextStyle(fontSize: 13.0, color: Colors.grey)),
+        subtitle: Text(recommed.tags, style: TextStyle(fontSize: 13.0, color: Colors.grey)),
         trailing: Container(
           padding: EdgeInsets.symmetric(horizontal: 14.0, vertical: 3.0),
           decoration: BoxDecoration(
@@ -296,6 +297,6 @@ class RecommendedModel implements TodayModel {
   var name;
   var comicId;
   var cover;
-  //var tags;
+  var tags;
   var chapterCount;
 }
