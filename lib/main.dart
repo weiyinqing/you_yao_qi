@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'Today.dart';
+import 'Discover.dart';
 
 void main() => runApp(
   MaterialApp(
@@ -77,18 +78,6 @@ class _MyHomePageState extends State<Youyaoqi> {
   }
 }
 
-
-class Discover extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold(
-      body: Center(
-        child: Text('发现'),
-      ),
-    );
-  }
-}
 
 class BookCase extends StatelessWidget {
   @override

@@ -67,12 +67,12 @@ class _TodayState extends State<TodayWidget> {
     return FutureBuilder(
       future: _request(),
       builder: (context, snapshot) {
+          print("snapshot.data ${snapshot.data}");
         switch (snapshot.connectionState) {
           case ConnectionState.none:
           case ConnectionState.waiting:
             return Center(
-              child:
-                  Text('Loading...', style: TextStyle(color: Colors.black87)),
+              child: CircularProgressIndicator()
             );
           default:
             if (snapshot.hasData) {
@@ -130,9 +130,6 @@ Widget _createCardWidget(BuildContext context, TodayModel today) {
       margin: EdgeInsets.all(0.0),
       child: CachedNetworkImage(
         imageUrl: card.cover,
-        placeholder: Center(
-          child: Text('Loading...'),
-        ),
         errorWidget: Icon(Icons.error),
         fit: BoxFit.cover,
       ),
