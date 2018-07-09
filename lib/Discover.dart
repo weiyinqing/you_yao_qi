@@ -49,7 +49,7 @@ class _DiscoverState extends State<DiscoverWidget> {
 /// 创建最外层的ListView
 Widget _generatorListView(BuildContext context, Map<String, List<DiscoverItem>> map) {
   return ListView.builder(
-    itemCount: 2,
+    itemCount: 3,
     itemBuilder: (context, index) {
       if (index == 0) {
         final gallerys = map[gallery];
@@ -57,6 +57,7 @@ Widget _generatorListView(BuildContext context, Map<String, List<DiscoverItem>> 
         return _generatorBannerWidget(context, gallerys, categorys);
       } else {
         final contents = map[content];
+        print(contents.length);
         return _generatorContentWidget(context, contents[index-1]);
       }
     },
@@ -152,45 +153,126 @@ Widget _generatorContentWidget(
   BuildContext context, 
   ComicContentItem content
   ) {
-  return Column(
-    children: <Widget>[
-      ListTile(
-        leading: Text(''),
-        title: Center(
-          child: Text(content.itemTitle, style: TextStyle(fontSize: 17.0)),
-        ),
-        trailing: Text(content.description, style: TextStyle(fontSize: 13.0, color: Colors.grey)),
-      ),
-      Container(
-        height: 350.0,
-        child: GridView.count(
-          crossAxisCount: 2,
-          scrollDirection: Axis.horizontal,
-          children: content.comicItems.map<Widget>((comic) {
-            return Card(
+  Widget _generatorArgValue1() {
+    return Column(
+        children: <Widget>[
+          ListTile(
+            leading: Text(''),
+            title: Center(
+              child: Text(content.itemTitle, style: TextStyle(fontSize: 17.0)),
+            ),
+            trailing: Text(content.description, style: TextStyle(fontSize: 13.0, color: Colors.grey)),
+          ),
+          Container(
+            height: 350.0,
+            child: GridView.count(
+              crossAxisCount: 2,
+              scrollDirection: Axis.horizontal,
+              children: content.comicItems.map<Widget>((comic) {
+                return Card(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Image(image: CachedNetworkImageProvider(comic.cover), fit: BoxFit.fitWidth),
+                      Container(
+                        padding: EdgeInsets.only(top: 12.0, left: 2.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(comic.name, style: TextStyle(fontSize: 17.0)),
+                            Text(comic.shortDescription, style: TextStyle(color: Colors.grey))
+                          ],
+                        ),
+                      )
+                    ],
+                  ),  
+                );
+              }).toList()
+            ),
+          )
+          
+        ],
+      );
+  }
+
+  Widget _generatorArgValue2() {
+    return Column(
+        children: <Widget>[
+          ListTile(
+            leading: Text(''),
+            title: Center(
+              child: Text(content.itemTitle, style: TextStyle(fontSize: 17.0)),
+            ),
+            trailing: Text(content.description, style: TextStyle(fontSize: 13.0, color: Colors.grey)),
+          ),
+          Card(
+            child: Container(
+              padding: EdgeInsets.all(10.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Image(image: CachedNetworkImageProvider(comic.cover)),
                   Container(
-                    padding: EdgeInsets.only(top: 12.0, left: 2.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(comic.name, style: TextStyle(fontSize: 17.0)),
-                        Text(comic.shortDescription, style: TextStyle(color: Colors.grey))
-                      ],
-                    ),
-                  )
+                    padding: EdgeInsets.only(bottom: 10.0),
+                    child: Image(image: CachedNetworkImageProvider(content.comicItems[0].cover)),
+                  ),
+                  Text(content.comicItems[0].name),
                 ],
-              ),  
-            );
-          }).toList(),
-        ),
-      )
-      
-    ],
-  );
+              ),
+            )
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Container(
+                width: (MediaQuery.of(context).size.width-30)/3,
+                child: Card(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Image(image: CachedNetworkImageProvider(content.comicItems[1].cover), fit: BoxFit.cover),
+                      Text(content.comicItems[1].name, style: TextStyle(fontSize: 17.0)),
+                      Text(content.comicItems[1].shortDescription, style: TextStyle(color: Colors.grey))
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                width: (MediaQuery.of(context).size.width-30)/3,
+                child: Card(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Image(image: CachedNetworkImageProvider(content.comicItems[2].cover), fit: BoxFit.cover),
+                      Text(content.comicItems[2].name, style: TextStyle(fontSize: 17.0)),
+                      Text(content.comicItems[2].shortDescription, style: TextStyle(color: Colors.grey))
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                width: (MediaQuery.of(context).size.width-30)/3,
+                child: Card(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Image(image: CachedNetworkImageProvider(content.comicItems[1].cover), fit: BoxFit.cover),
+                      Text(content.comicItems[2].name, style: TextStyle(fontSize: 17.0)),
+                      Text(content.comicItems[2].shortDescription, style: TextStyle(color: Colors.grey))
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          )
+        ]
+    );
+  }
+
+  if (int.parse(content.argValue) == 1) {
+    return _generatorArgValue1();
+  } else if(int.parse(content.argValue) == 2) {
+    return _generatorArgValue2();
+  }
 }
 
 const gallery = "gallery";
