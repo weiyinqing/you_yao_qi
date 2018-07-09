@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:banner/banner.dart';
 
 class Discover extends StatelessWidget {
   @override
@@ -52,25 +53,43 @@ Widget _generatorListView(BuildContext context, Map<String, List<DiscoverItem>> 
     itemBuilder: (context, index) {
       if (index == 0) {
         final gallerys = map[gallery];
-        final comics = map[comic];
-        return _generatorBannerWidget(context, gallerys, comics);
+        final categorys = map[category];
+        return _generatorBannerWidget(context, gallerys, categorys);
       } else {
-        return _generatorSectionHeaderWidget(context);
+        final contents = map[content];
+        return _generatorContentWidget(context, contents[index-1]);
       }
     },
   );
 }
 
 /// 最上面的无限滚动的Banner和5个小按钮
-Widget _generatorBannerWidget(BuildContext context, List<GalleryItem> gallertyItems, List<ComicItem> comicItems) {
+Widget _generatorBannerWidget(
+  BuildContext context,
+  List<GalleryItem> gallertyItems, 
+  List<ComicCategaryItem> categorys
+  ) {
   // 创建Banner和5个小按钮的容器
   Widget _generatorBannerContainer(BuildContext context) {
+    final fix = MediaQuery.of(context).size.width / 645.0;
+    final imageHeight = fix * 415.0;
     return Container(
       child: Column(
         children: [
           Container(
-            child: Image.network(gallertyItems[0].cover),
-            color: Colors.red,
+            child: BannerView(
+              height: imageHeight,
+              data: gallertyItems,
+              onBannerClickListener: (index, data) {
+                print(data);
+              },
+              buildShowView: (index, data) {
+                return Image(
+                  image: CachedNetworkImageProvider(data.cover),
+                  fit: BoxFit.cover,
+                );
+              },
+            )
           ),
           Container(
             height: 80.0,
@@ -82,8 +101,8 @@ Widget _generatorBannerWidget(BuildContext context, List<GalleryItem> gallertyIt
 
   // 创建5个小按钮
   List<Column> _generatorColumns(BuildContext context) {
-    return comicItems.map((comic) {
-      print(comic.cover);
+    return categorys.map((category) {
+      print(category.cover);
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -91,7 +110,7 @@ Widget _generatorBannerWidget(BuildContext context, List<GalleryItem> gallertyIt
             width: 80.0,
             height: 80.0,
             child: Image(
-              image: CachedNetworkImageProvider(comic.cover), 
+              image: CachedNetworkImageProvider(category.cover), 
               fit: BoxFit.cover
             ),
           ),
@@ -128,19 +147,55 @@ Widget _generatorBannerWidget(BuildContext context, List<GalleryItem> gallertyIt
   );
 }
 
-/// 创建Section Header
-Widget _generatorSectionHeaderWidget(BuildContext context) {
-  return ListTile(
-    leading: Text(''),
-    title: Center(
-      child: Text('超人气作品', style: TextStyle(fontSize: 17.0)),
-    ),
-    trailing: Text('更多', style: TextStyle(fontSize: 13.0, color: Colors.grey)),
+/// 创建Section Content Widget
+Widget _generatorContentWidget(
+  BuildContext context, 
+  ComicContentItem content
+  ) {
+  return Column(
+    children: <Widget>[
+      ListTile(
+        leading: Text(''),
+        title: Center(
+          child: Text(content.itemTitle, style: TextStyle(fontSize: 17.0)),
+        ),
+        trailing: Text(content.description, style: TextStyle(fontSize: 13.0, color: Colors.grey)),
+      ),
+      Container(
+        height: 350.0,
+        child: GridView.count(
+          crossAxisCount: 2,
+          scrollDirection: Axis.horizontal,
+          children: content.comicItems.map<Widget>((comic) {
+            return Card(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Image(image: CachedNetworkImageProvider(comic.cover)),
+                  Container(
+                    padding: EdgeInsets.only(top: 12.0, left: 2.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(comic.name, style: TextStyle(fontSize: 17.0)),
+                        Text(comic.shortDescription, style: TextStyle(color: Colors.grey))
+                      ],
+                    ),
+                  )
+                ],
+              ),  
+            );
+          }).toList(),
+        ),
+      )
+      
+    ],
   );
 }
 
 const gallery = "gallery";
-const comic = "comic";
+const category = "category";
+const content = "content";
 
 abstract class DiscoverItem {}
 class GalleryItem implements DiscoverItem{
@@ -157,7 +212,7 @@ class GalleryItem implements DiscoverItem{
   }
 }
 
-class ComicItem implements DiscoverItem {
+class ComicCategaryItem implements DiscoverItem {
   var cover;
   var name;
   var argName;
@@ -165,13 +220,47 @@ class ComicItem implements DiscoverItem {
   var argCon;
   var itemTitle;
 
-  ComicItem.fromJSON({Map object}) {
+  ComicCategaryItem.fromJSON({Map object}) {
     this.cover = object["cover"];
     this.name = object["name"];
     this.argName = object["cover"];
     this.argValue = object["argValue"];
     this.argCon = object["cover"];
     this.itemTitle = object["itemTitle"];
+  }
+}
+
+class ComicContentItem implements DiscoverItem {
+  var titleIconUrl;
+  var newTitleIconUrl;
+  var itemTitle;
+  var description;
+  var sortId;
+  var argName;
+  var argValue;
+  var comicItems; 
+
+  ComicContentItem.fromJSON({Map object}) {
+    this.titleIconUrl = object["titleIconUrl"];
+    this.newTitleIconUrl = object["newTitleIconUrl"];
+    this.itemTitle = object["itemTitle"];
+    this.description = object["description"];
+    this.sortId = object["sortId"];
+    this.argName = object["argName"];
+    this.argValue = object["argValue"];
+  }
+}
+class ComicItem {
+  var comicId;
+  var name;
+  var cover;
+  var shortDescription;
+
+  ComicItem.fromJSON({Map object}) {
+    this.comicId = object["comicId"];
+    this.name = object["name"];
+    this.cover = object["cover"];
+    this.shortDescription = object["short_description"];
   }
 }
 
@@ -185,21 +274,40 @@ class YYQRequest {
     final returnData = data["returnData"];
     final galleryItems = returnData["galleryItems"];
     final galleryList = List<GalleryItem>();
+    final categoryList = List<ComicCategaryItem>();
+    final contentList = List<ComicContentItem>();
     for (int i = 0; i < galleryItems.length; i++) {
       var item = GalleryItem.fromJSON(object: galleryItems[i]);
       galleryList.add(item);
     }
-    discoverMap[gallery] = galleryList;
 
     final comicLists = returnData["comicLists"];
-    final comicsObject = comicLists[0];
-    final comics = comicsObject["comics"];
-    final comicsItems = List<ComicItem>();
-    for (int i = 0; i < comics.length; i++) {
-      var item = ComicItem.fromJSON(object: comics[i]);
-      comicsItems.add(item);
+    for (int i = 0; i < comicLists.length; i++) {
+      if (i == 0) {
+        final comicsObject = comicLists[i];
+        final comics = comicsObject["comics"];
+        for (int i = 0; i < comics.length; i++) {
+          var item = ComicCategaryItem.fromJSON(object: comics[i]);
+          categoryList.add(item);
+        }
+        
+      } else {
+        final comicsObject = comicLists[i];
+        final comics = comicsObject["comics"];
+        var contentItem = ComicContentItem.fromJSON(object: comicsObject);
+        contentItem.comicItems = List<ComicItem>();
+        for (int j = 0; j < comics.length; j++) {
+          final comicsObject2 = comics[j];
+          final comicItem = ComicItem.fromJSON(object: comicsObject2);
+          contentItem.comicItems.add(comicItem);
+        }
+        contentList.add(contentItem);
+      }
     }
-    discoverMap[comic] = comicsItems;
+
+    discoverMap[gallery] = galleryList;
+    discoverMap[category] = categoryList;
+    discoverMap[content] = contentList;
 
     return discoverMap; 
   }
