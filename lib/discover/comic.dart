@@ -51,6 +51,77 @@ class ComicWidget15 extends StatelessWidget {
   }
 }
 
+class ComicWidget17 extends StatelessWidget {
+  final ComicModel comicModel;
+  ComicWidget17({Key key, this.comicModel}): super(key: key);
+
+  @override
+  Widget build(BuildContext context){
+    return Container(
+      child: Column(
+        children: <Widget>[
+          _generatorTitleWidget(context, comicModel.itemTitle, comicModel.description),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 9.0),
+            child: Column(
+              children: <Widget>[
+                Card(
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.all(10.0),
+                        child: Image(image: CachedNetworkImageProvider(comicModel.comics[0].cover)),
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(bottom: 10.0, left: 10.0),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(comicModel.comics[0].name)
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: comicModel.comics.skip(1).map<Widget>((comic){
+                      return Container(
+                        width: (MediaQuery.of(context).size.width-20.0) / 3,
+                        child: Card(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Image(
+                                image: CachedNetworkImageProvider(comic.cover),
+                                fit: BoxFit.cover,
+                              ),
+                              Container(
+                                padding: EdgeInsets.all(5.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(comic.name, style: TextStyle(fontSize: 15.0)),
+                                    Text(comic.shortDescription, style: TextStyle(fontSize: 12.0, color: Colors.grey))
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 
 Widget _generatorTitleWidget(BuildContext context, String title, String des) {
   return Container(
