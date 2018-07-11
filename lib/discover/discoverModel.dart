@@ -6,8 +6,9 @@ class DiscoverResult {
   String message;
   List<GalleryModel> galleryItems;
   List<CategoryModel> categoryList;
+  List<ComicModel> comicList;
 
-  DiscoverResult({this.code, this.stateCode, this.message, this.galleryItems, this.categoryList});
+  DiscoverResult({this.code, this.stateCode, this.message, this.galleryItems, this.categoryList, this.comicList});
 }
 
 class GalleryModel extends DiscoverModel {
@@ -55,5 +56,50 @@ class CategoryModel extends DiscoverModel {
     this.argName = covariant["argName"];
     this.argValue = covariant["argValue"];
     this.itemTitle = covariant["itemTitle"];
+  }
+}
+
+class ComicModel extends DiscoverModel {
+  var titleIconUrl;
+  var newTitleIconUrl;
+  var itemTitle;
+  var description;
+  var sortId;
+  var argName;
+  var argValue;
+  var comicType;
+  List<ComicItemModel> comics;
+
+  ComicModel.fromJSON(Map covariant) {
+    this.titleIconUrl = covariant["titleIconUrl"];
+    this.newTitleIconUrl = covariant["newTitleIconUrl"];
+    this.itemTitle = covariant["itemTitle"];
+    this.description = covariant["description"];
+    this.sortId = covariant["sortId"];
+    this.argName = covariant["argName"];
+    this.argValue = covariant["argValue"];
+    this.comicType = covariant["comicType"];
+    final _comics = covariant["comics"];
+    this.comics = List<ComicItemModel>();
+    for (int i = 0; i < _comics.length; i++) {
+      final comic = ComicItemModel.fromJSON(_comics[i]);
+      this.comics.add(comic);
+    }
+  }
+}
+
+class ComicItemModel {
+  var comicId;
+  var name;
+  var cover;
+  var shortDescription;
+  var tags;
+
+  ComicItemModel.fromJSON(Map covariant) {
+    this.comicId = covariant["comicId"];
+    this.name = covariant["name"];
+    this.cover = covariant["cover"];
+    this.shortDescription = covariant["short_description"];
+//    this.tags = covariant["tags"].join(" ").toString();
   }
 }

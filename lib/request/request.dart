@@ -55,7 +55,8 @@ class YYQRequest {
       stateCode: stateCode, 
       message: message,
       galleryItems: List<GalleryModel>(),
-      categoryList: List<CategoryModel>()
+      categoryList: List<CategoryModel>(),
+      comicList: List<ComicModel>()
     );
     final _returnData = _data["returnData"];
     final _galleryItems = _returnData["galleryItems"];
@@ -71,6 +72,9 @@ class YYQRequest {
           final category = CategoryModel.fromJSON(_comics[j]);
           result.categoryList.add(category);
         }
+      } else {
+        final comicModel = ComicModel.fromJSON(_comicLists[i]);
+        result.comicList.add(comicModel);
       }
     }
     return result;

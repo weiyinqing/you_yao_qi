@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import '../request/request.dart';
-import '../discover/discoverModel.dart';
+import 'discoverModel.dart';
 import 'banner.dart';
-import '../discover/category.dart';
+import 'category.dart';
+import 'comic.dart';
 
 class DiscoverWidget extends StatefulWidget {
   _DiscoverWidget createState() => _DiscoverWidget();
@@ -37,7 +38,7 @@ class _DiscoverWidget extends State<DiscoverWidget> {
 Widget _createDiscoverListView(BuildContext context, DiscoverResult result) {
   // print("result.galleryItems.length = ${result.galleryItems.length}");
   return ListView.builder(
-    itemCount: 2,
+    itemCount: 3,
     itemBuilder: (context, index) {
       if (index == 0) {
         final list = result.galleryItems.map<String>((gallery) {
@@ -48,7 +49,15 @@ Widget _createDiscoverListView(BuildContext context, DiscoverResult result) {
       } else if (index == 1) {
         return CategoryWidget(list: result.categoryList);
       } else {
-
+        final comic = result.comicList[index-2];
+        print(index);
+        print(comic.comicType);
+        print(comic.itemTitle);
+        if (comic.comicType == 15) {
+          return ComicWidget15(comicModel: comic);
+        } else {
+          return null;
+        }
       }
     },
   );
