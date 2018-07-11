@@ -1,4 +1,5 @@
 import '../today/todayModel.dart';
+import '../discover/discoverModel.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -35,6 +36,40 @@ class YYQRequest {
         } else {
           final dayItemData2 = DayItemData2.fromJSON(_dayItemData);
           result.dayDataList.add(dayItemData2);
+        }
+      }
+    }
+    return result;
+  }
+
+  /// 获取发现模块数据
+  static Future<DiscoverResult> requestDiscover() async {
+    final response = await http.get(discoverURL);
+    final map = jsonDecode(response.body);
+    final code = map["code"];
+    final _data = map["data"];
+    final stateCode = _data["stateCode"];
+    final message = _data["message"];
+    final result = DiscoverResult(
+      code: code, 
+      stateCode: stateCode, 
+      message: message,
+      galleryItems: List<GalleryModel>(),
+      categoryList: List<CategoryModel>()
+    );
+    final _returnData = _data["returnData"];
+    final _galleryItems = _returnData["galleryItems"];
+    for (int i = 0; i < _galleryItems.length; i++) {
+      final gallery = GalleryModel.fromJSON(_galleryItems[i]);
+      result.galleryItems.add(gallery);
+    }
+    final _comicLists = _returnData["comicLists"];
+    for (int i = 0; i < _comicLists.length; i++) {
+      if (i == 0) {
+        final _comics = _comicLists[i]["comics"];
+        for(int j = 0; j < _comics.length; j++) {
+          final category = CategoryModel.fromJSON(_comics[j]);
+          result.categoryList.add(category);
         }
       }
     }
