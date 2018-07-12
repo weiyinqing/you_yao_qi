@@ -38,7 +38,7 @@ class _DiscoverWidget extends State<DiscoverWidget> {
 Widget _createDiscoverListView(BuildContext context, DiscoverResult result) {
   // print("result.galleryItems.length = ${result.galleryItems.length}");
   return ListView.builder(
-    itemCount: 4,
+    itemCount: 2 + result.comicList.length,
     itemBuilder: (context, index) {
       if (index == 0) {
         final list = result.galleryItems.map<String>((gallery) {
@@ -57,6 +57,10 @@ Widget _createDiscoverListView(BuildContext context, DiscoverResult result) {
           return ComicWidget15(comicModel: comic);
         } else if (comic.comicType == 17) {
           return ComicWidget17(comicModel: comic);
+        } else if (comic.comicType == 14) {
+          return ComicWidget14(comicModel: comic);
+        } else if(comic.comicType == 16 ) {
+          return ComicWidget16(comicModel: comic);
         } else {
           return null;
         }

@@ -82,40 +82,52 @@ class ComicWidget17 extends StatelessWidget {
                     ],
                   ),
                 ),
-                Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: comicModel.comics.skip(1).map<Widget>((comic){
-                      return Container(
-                        width: (MediaQuery.of(context).size.width-20.0) / 3,
-                        child: Card(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Image(
-                                image: CachedNetworkImageProvider(comic.cover),
-                                fit: BoxFit.cover,
-                              ),
-                              Container(
-                                padding: EdgeInsets.all(5.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(comic.name, style: TextStyle(fontSize: 15.0)),
-                                    Text(comic.shortDescription, style: TextStyle(fontSize: 12.0, color: Colors.grey))
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
+                _generatorCardWidget(context, comicModel.comics.skip(1).toList())
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class ComicWidget14 extends StatelessWidget {
+  final ComicModel comicModel;
+  ComicWidget14({Key key, this.comicModel}): super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Container(
+      child: Column(
+        children: <Widget>[
+          _generatorTitleWidget(context, comicModel.itemTitle, comicModel.description),
+          _generatorCardWidget(context, comicModel.comics.take(3).toList()),
+          _generatorCardWidget(context, comicModel.comics.getRange(3, comicModel.comics.length).toList())
+        ],
+      )
+    );
+  }
+}
+
+class ComicWidget16 extends StatelessWidget {
+  final ComicModel comicModel;
+  ComicWidget16({Key key, this.comicModel}): super(key: key);
+  
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Container(
+      child: Column(
+        children: <Widget>[
+          _generatorTitleWidget(context, comicModel.itemTitle, ""),
+          Container(
+            child: Image(
+              image: CachedNetworkImageProvider(comicModel.comics[0].cover),
+              fit: BoxFit.cover
+            ),
+          )
         ],
       ),
     );
@@ -139,6 +151,40 @@ Widget _generatorTitleWidget(BuildContext context, String title, String des) {
           child: Text(des, style: TextStyle(color: Colors.grey, fontSize: 13.0)),
         ),
       ],
+    ),
+  );
+}
+
+Widget _generatorCardWidget(BuildContext context, List<ComicItemModel> list) {
+  return Container(
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: list.map<Widget>((comic){
+        return Container(
+          width: (MediaQuery.of(context).size.width-20.0) / 3,
+          child: Card(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Image(
+                  image: CachedNetworkImageProvider(comic.cover),
+                  fit: BoxFit.cover,
+                ),
+                Container(
+                  padding: EdgeInsets.all(5.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(comic.name, style: TextStyle(fontSize: 15.0)),
+                      Text(comic.shortDescription, style: TextStyle(fontSize: 12.0, color: Colors.grey))
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
     ),
   );
 }
