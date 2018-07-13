@@ -38,6 +38,7 @@ class _DiscoverWidget extends State<DiscoverWidget> {
 Widget _createDiscoverListView(BuildContext context, DiscoverResult result) {
   // print("result.galleryItems.length = ${result.galleryItems.length}");
   return ListView.builder(
+    padding: EdgeInsets.only(top: 0.0),
     itemCount: 2 + result.comicList.length,
     itemBuilder: (context, index) {
       if (index == 0) {
