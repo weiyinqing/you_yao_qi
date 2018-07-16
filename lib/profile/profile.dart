@@ -28,6 +28,7 @@ final datas = [
   ProfileData(assetName: "images/profile_rss.png", title: "设置"),
 ];
 
+
 class ProfileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
